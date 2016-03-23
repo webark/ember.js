@@ -84,7 +84,7 @@ class CurlyComponentManager {
   }
 
   didCreate(component) {
-    // component.didInsertElement();
+    component.didInsertElement();
     // component.didRender();
     component._transitionTo('inDOM');
   }

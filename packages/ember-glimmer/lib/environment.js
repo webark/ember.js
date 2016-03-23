@@ -121,4 +121,8 @@ export default class extends Environment {
     let keyPath = args.named.get('key').value();
     return createIterable(ref, keyPath);
   }
+
+  didDestroy(destroyable) {
+    destroyable.destroy();
+  }
 }
