@@ -58,7 +58,13 @@ export class Renderer {
 
   remove(view) {
     view._transitionTo('destroying');
-    view['_renderResult'].destroy();
+
+    let { _renderResult } = view;
+
+    if (_renderResult) {
+      _renderResult.destroy();
+    }
+
     view.destroy();
   }
 

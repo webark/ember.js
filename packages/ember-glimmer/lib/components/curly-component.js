@@ -15,8 +15,7 @@ export class CurlyComponentSyntax extends StatementSyntax {
   }
 }
 
-function argsToProps(args) {
-  let attrs = args.named.value();
+function attrsToProps(attrs) {
   let attrKeys = Object.keys(attrs);
   let merged = { attrs: {} };
 
@@ -38,17 +37,23 @@ function argsToProps(args) {
 
 class CurlyComponentManager {
   create(definition, args, dynamicScope) {
-    let klass = definition.ComponentClass;
-    let component = klass.create(argsToProps(args));
     let parentView = dynamicScope.view;
+
+    let klass = definition.ComponentClass;
+    let attrs = args.named.value();
+    let props = attrsToProps(attrs);
+
+    props.renderer = parentView.renderer;
+
+    let component = klass.create(props);
 
     dynamicScope.view = component;
     parentView.appendChild(component);
 
-    // component.didInitAttrs({ attrs });
-    // component.didReceiveAttrs({ oldAttrs: null, newAttrs: attrs });
-    // component.willInsertElement();
-    // component.willRender();
+    component.didInitAttrs({ attrs });
+    component.didReceiveAttrs({ newAttrs: attrs });
+    component.willInsertElement();
+    component.willRender();
 
     return component;
   }
@@ -85,12 +90,14 @@ class CurlyComponentManager {
 
   didCreate(component) {
     component.didInsertElement();
-    // component.didRender();
+    component.didRender();
     component._transitionTo('inDOM');
   }
 
   update(component, args, dynamicScope) {
-    component.setProperties(argsToProps(args));
+    let attrs = args.named.value();
+
+    component.setProperties(attrsToProps(attrs));
 
     // let oldAttrs = component.attrs;
     // let newAttrs = args.named.value();

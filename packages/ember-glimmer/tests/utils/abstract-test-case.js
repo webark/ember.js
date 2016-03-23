@@ -328,6 +328,10 @@ export class RenderingTest extends TestCase {
   }
 }
 
-export function strip([str]) {
+export function strip([...strings], ...values) {
+  let str = strings.map((string, index) => {
+    let interpolated = values[index];
+    return string + (interpolated !== undefined ? interpolated : '');
+  }).join('');
   return str.split('\n').map(s => s.trim()).join('');
 }

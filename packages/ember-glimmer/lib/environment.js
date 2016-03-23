@@ -23,6 +23,7 @@ import {
 import { default as hash } from './helpers/hash';
 import { default as loc } from './helpers/loc';
 import { default as log } from './helpers/log';
+import { default as readonly } from './helpers/readonly';
 
 const builtInHelpers = {
   concat,
@@ -30,7 +31,8 @@ const builtInHelpers = {
   unless: inlineUnless,
   hash,
   loc,
-  log
+  log,
+  readonly
 };
 
 export default class extends Environment {
@@ -120,6 +122,11 @@ export default class extends Environment {
   iterableFor(ref, args) {
     let keyPath = args.named.get('key').value();
     return createIterable(ref, keyPath);
+  }
+
+  didCreate(component, manager) {
+    this.createdComponents.unshift(component);
+    this.createdManagers.unshift(manager);
   }
 
   didDestroy(destroyable) {
